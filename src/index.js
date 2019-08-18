@@ -1,18 +1,11 @@
-const express = require('express')
-const app = express()
 const port = process.env.PORT || 3000
-const bodyParser = require('body-parser')
 
-const mongo = process.env.MONGODB || 'mongodb://localhost:27017/teste-backend-foregon'
 const mongoose = require('mongoose')
+const mongo = process.env.MONGODB || 'mongodb://localhost:27017/teste-backend-foregon'
 //para o mongose usar as promise padrão do node
 mongoose.Promise = global.Promise
 
-//middleware que faz o processamento do corpo da requisição
-app.use(bodyParser.json({ extended: true }))
-
-const router = require('./routes/index')
-app.use(router())
+const app =require('./app')
 
 mongoose.connect(mongo, { useNewUrlParser: true }).then(() => {
     app.listen(port, () => {
