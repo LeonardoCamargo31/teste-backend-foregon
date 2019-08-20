@@ -3,17 +3,10 @@ const { validationResult } = require('express-validator')
 const moment = require('moment')
 const { extractErrors } = require('../utils/index')
 
-//exibir todos as solicitações
-const index = async (req, res) => {
-    const results = await Solicitation.find()
-    res.json(results)
-}
-
 //salvar as solicitações parcialmente
 //esse endpoint não contém nenhuma validação de negócio
 const partial = async (req, res) => {
     const errors = validationResult(req);
-    console.log(errors)
     if (errors.isEmpty()) {
         //checar se tem token
         //se já tiver, só atualiza os dados
@@ -110,7 +103,6 @@ const final = async (req, res) => {
 }
 
 module.exports = {
-    index,
     partial,
     final
 }

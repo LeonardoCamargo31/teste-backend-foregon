@@ -13,44 +13,70 @@ describe('Testando RestAPI', () => {
         return true
     })
 
-    it('Deve salvar somente o nome', done => {
-        request(app)
-            .post('/partial')
-            .send({ name: 'Felipe Smith' })
-            .expect(200)
-            .end((err, res) => {
-                expect(res.body.success).be.true
-                expect(res.body.token).be.string
-                done()
-            })
-    })
+    describe('Testes em /partial', () => {
 
-
-    it('Deve salvar somente o nome e depois o email', done => {
-        request(app)
-            .post('/partial')
-            .send({ name: 'Felipe Smith' })
-            .expect(200)
-            .end((err, res) => {
-                if (expect(res.body.success).be.true) {
-                    request(app)
-                        .post('/partial')
-                        .send({
-                            token: res.body.token,
-                            email: 'felipe.smith@gmail.com'
-                        })
-                        .expect(200)
-                        .end((err, res) => {
-                            expect(res.body.success).be.true
-                            expect(res.body.token).be.string
-                            done()
-                        })
-                } else {
+        it('Deve salvar somente o nome', done => {
+            request(app)
+                .post('/partial')
+                .send({ name: 'Felipe Smith' })
+                .expect(200)
+                .end((err, res) => {
                     expect(res.body.success).be.true
                     expect(res.body.token).be.string
                     done()
-                }
-            })
+                })
+        })
+
+        it('Deve dar erro ao enviar nome curto', done => {
+            request(app)
+                .post('/partial')
+                .send({ name: 'Leo' })
+                .expect(200)
+                .end((err, res) => {
+                    expect(res.body.success).be.false
+                    expect(res.body.errors.name[0]).to.equal('Nome deve ter pelo menos 5 caracteres.')
+                    done()
+                })
+        })
+
+        it('Deve dar erro, cpf inválido', done => {
+            request(app)
+                .post('/partial')
+                .send({ cpf: '444' })
+                .expect(200)
+                .end((err, res) => {
+                    expect(res.body.success).be.false
+                    expect(res.body.errors.cpf[0]).to.equal('CPF inválido.')
+                    done()
+                })
+        })
+
+        it('Deve salvar somente o nome e depois o email', done => {
+            request(app)
+                .post('/partial')
+                .send({ name: 'Felipe Smith' })
+                .expect(200)
+                .end((err, res) => {
+                    if (expect(res.body.success).be.true) {
+                        request(app)
+                            .post('/partial')
+                            .send({
+                                token: res.body.token,
+                                email: 'felipe.smith@gmail.com'
+                            })
+                            .expect(200)
+                            .end((err, res) => {
+                                expect(res.body.success).be.true
+                                expect(res.body.token).be.string
+                                done()
+                            })
+                    } else {
+                        expect(res.body.success).be.true
+                        expect(res.body.token).be.string
+                        done()
+                    }
+                })
+        })
     })
 
     describe('Testes em /final', () => {
@@ -72,7 +98,7 @@ describe('Testando RestAPI', () => {
                 .send({ name: 'Felipe Smith' })
                 .expect(200)
                 .end((err, res) => {
-                    expect(res.body.errors.token[0]).to.equal('Deve informar o token')
+                    expect(res.body.errors.token[0]).to.equal('Token é obrigatório.')
                     expect(res.body.success).be.false
                     done()
                 })
@@ -81,7 +107,7 @@ describe('Testando RestAPI', () => {
         it('Deve dar erro ao tentar salvar somente o nome', done => {
             request(app)
                 .post('/final')
-                .send({ token, name: 'Felipe Smith', cpf:'44411026821', birthdate:'2005-05-31'})
+                .send({ token, name: 'Felipe Smith', cpf: '44411026821', birthdate: '2005-05-31' })
                 .expect(200)
                 .end((err, res) => {
                     expect(res.body.success).be.false
@@ -90,16 +116,54 @@ describe('Testando RestAPI', () => {
                 })
         })
 
-        it('Deve salvar com sucesso', done => {
+        it('Deve dar erro, idade menor de 18 anos', done => {
             request(app)
                 .post('/final')
                 .send({ 
                     token,
-                    product:55, 
-                    name: 'Felipe Smith', 
+                    product: 55,
+                    name: 'Felipe Smith',
                     email: 'felipe.smith@gmail.com',
-                    cpf:'44411026821', 
-                    birthdate:'1996-05-31',
+                    cpf: '44411026821',
+                    birthdate: '2005-05-31',
+                    phone: '18 3903-6805' })
+                .expect(200)
+                .end((err, res) => {
+                    expect(res.body.errors.birthdate[0]).to.equal('Data de nascimento menor de 18 anos.')
+                    expect(res.body.success).be.false
+                    done()
+                })
+        })
+
+        it('Deve dar erro, idade maior de 65 anos', done => {
+            request(app)
+                .post('/final')
+                .send({ 
+                    token,
+                    product: 55,
+                    name: 'Felipe Smith',
+                    email: 'felipe.smith@gmail.com',
+                    cpf: '44411026821',
+                    birthdate: '1950-05-31',
+                    phone: '18 3903-6805' })
+                .expect(200)
+                .end((err, res) => {
+                    expect(res.body.errors.birthdate[0]).to.equal('Data de nascimento maior de 65 anos.')
+                    expect(res.body.success).be.false
+                    done()
+                })
+        })
+
+        it('Deve salvar com sucesso', done => {
+            request(app)
+                .post('/final')
+                .send({
+                    token,
+                    product: 55,
+                    name: 'Felipe Smith',
+                    email: 'felipe.smith@gmail.com',
+                    cpf: '44411026821',
+                    birthdate: '1996-05-31',
                     phone: '18 3903-6805'
                 })
                 .expect(200)
@@ -110,17 +174,16 @@ describe('Testando RestAPI', () => {
                 })
         })
 
-
-        it('Erro ao tentar solicitar duas vezes com mesmo cpf', done => {
+        it('Esperado erro, um mesmo CPF não pode ter uma nova proposta por 90 dias', done => {
             request(app)
                 .post('/final')
-                .send({ 
+                .send({
                     token,
-                    product:55, 
-                    name: 'Felipe Smith', 
+                    product: 55,
+                    name: 'Felipe Smith',
                     email: 'felipe.smith@gmail.com',
-                    cpf:'44411026821', 
-                    birthdate:'1996-05-31',
+                    cpf: '44411026821',
+                    birthdate: '1996-05-31',
                     phone: '18 3903-6805'
                 })
                 .expect(200)
@@ -133,7 +196,7 @@ describe('Testando RestAPI', () => {
 
     })
 
-    after('Limpar registros do banco de dados de teste',async()=>{
+    after('Limpar registros do banco de dados de teste', async () => {
         await Solicitation.deleteMany()
     })
 })
