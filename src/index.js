@@ -1,7 +1,7 @@
 const port = process.env.PORT || 3000
 
 const mongoose = require('mongoose')
-const mongo = `mongodb+srv://leonardo:${process.env.MONGODB}@teste-backend-foregon-cymke.mongodb.net/test?retryWrites=true&w=ma` || 'mongodb://localhost:27017/teste-backend-foregon'
+const mongo = `mongodb+srv://leonardo:EQpQRTaAFDBcoUGr@teste-backend-foregon-cymke.mongodb.net/test?retryWrites=true&w=ma`
 //para o mongose usar as promise padrão do node
 //leonardo:EQpQRTaAFDBcoUGr
 mongoose.Promise = global.Promise
