@@ -29,6 +29,7 @@ A API retorna os seguintes códigos de status:
 | 200 | `OK` |
 | 201 | `SOLICITAÇÃO CRIADA` |
 | 400 | `REQUISIÇÃO ERRADA` |
+| 500 | `ERRO INTERNO` |
 
 ## Partial
 

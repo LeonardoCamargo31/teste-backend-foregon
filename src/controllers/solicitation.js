@@ -15,8 +15,9 @@ const partial = async (req, res) => {
                 //salvar uma nova solicitação
                 const { product, name, email, cpf, birthdate, phone } = req.body
                 const solicitation = new Solicitation({ productId: product, name, email, cpf, birthdate, phone })
+
                 await solicitation.save()
-                res.status(201).json({
+                return res.status(201).json({
                     success: true,
                     title: 'Salvo com sucesso.',
                     status: 201,
@@ -33,7 +34,7 @@ const partial = async (req, res) => {
                 solicitation.phone = req.body.phone
 
                 await solicitation.save()
-                res.status(200).json({
+                return res.status(200).json({
                     success: true,
                     title: 'Atualizado com sucesso.',
                     status: 200,
@@ -41,12 +42,11 @@ const partial = async (req, res) => {
                 })
             }
         }
-        catch (error) {
+        catch (e) {
             return res.status(500).json({
                 success: false,
                 title: 'Ocorreu um erro interno.',
                 status: 500,
-                errors: []
             });
         }
     } else {
@@ -105,12 +105,11 @@ const final = async (req, res) => {
                 });
             }
         }
-        catch (error) {
+        catch (e) {
             return res.status(500).json({
                 success: false,
                 title: 'Ocorreu um erro interno.',
                 status: 500,
-                errors: []
             });
         }
     } else {
