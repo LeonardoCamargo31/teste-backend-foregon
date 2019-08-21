@@ -31,11 +31,44 @@ A API retorna os seguintes códigos de status:
 | 400 | `REQUISIÇÃO ERRADA` |
 | 500 | `ERRO INTERNO` |
 
+## Autenticação
+
+Para realizar requisições na API é necessário ter o token de acesso. Para obter o token é necessário se registrar na API, basta realizar um `POST` em /register como no exemplo abaixo:
+
++ `POST` - Request
+
+```javascript
+{
+  "name" : "Leonardo",
+  "email" : "leonardo@hotmail.com",
+  "senha" : "123456"
+}
+```
+
++ Response
+
+```javascript
+{
+  "success": true,
+  "title": "Usuário criado com sucesso.",
+  "token": "seu_token_aqui",
+  "status": 201
+}
+```
+
+Na resposta se recebe o `token` que será utilizado no cabeçalho das próximas requisições, desta forma:
+
+```javascript
+"Authorization": "Bearer seu_token_aqui",
+```
+
+
+
 ## Partial
 
 Nesse endpoint envia a solicitação parcialmente, e a API retorna um token, para que possa ser atualizado esses dados posteriormente.
 
-+ Request
++ `POST` - Request
 
 ```javascript
 {
@@ -56,7 +89,7 @@ Nesse endpoint envia a solicitação parcialmente, e a API retorna um token, par
 
 Em seguida, pode enviar uma nova requisição, agora utilizando o token recebido na resposta, para atualizar a sua solicitação.
 
-+ Request
++ `POST` - Request
 
 ```javascript
 {
@@ -79,9 +112,9 @@ Em seguida, pode enviar uma nova requisição, agora utilizando o token recebido
 
 ## Final
 
-Esse endpoint recebe a solicitação completa, ou seja com todos os campos. A API valida todos os campos, caso os esteja tudo certo, essa solitação altera seu status para solicitação completa.
+Esse endpoint recebe a solicitação completa, ou seja com todos os campos. A API valida todos os campos, caso os esteja tudo certo, essa solicitação altera seu status para solicitação completa.
 
-+ Request
++ `POST` - Request
 
 ```javascript
 {
@@ -110,7 +143,7 @@ Esse endpoint recebe a solicitação completa, ou seja com todos os campos. A AP
 
 Erro de validação, ao fazer uma requisição com algum campo inválido, por exemplo, o `name`, a API na resposta retorna um objeto `errors` com os erros de validação.
 
-+ Request
++ `POST` - Request
 
 ```javascript
 {
@@ -133,9 +166,9 @@ Erro de validação, ao fazer uma requisição com algum campo inválido, por ex
 }
 ```
 
-Erro na regra de negócio, exemplo, um mesmo CPF não pode ter uma nova proposta por 90 dias. Então a API retorna uma respota de erro com a descrição do erro ocorrido.
+Erro na regra de negócio, exemplo, um mesmo CPF não pode ter uma nova proposta por 90 dias. Então a API retorna uma resposta de erro com a descrição do erro ocorrido.
 
-+ Request
++ `POST` - Request
 
 ```javascript
 {
