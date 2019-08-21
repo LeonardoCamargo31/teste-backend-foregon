@@ -88,7 +88,7 @@ const final = async (req, res) => {
 
 
                 await solicitation.save()
-                res.status(201).json({
+                return res.status(201).json({
                     success: true,
                     token: solicitation._id,
                     title: 'Solicitação criada com sucesso.',

@@ -14,7 +14,7 @@ router.post('/partial', [
     check('cpf')
         .optional().custom(validateCPF).withMessage('CPF inválido.'),
     check('birthdate').optional()
-        .custom(isValidDate).withMessage('Data de nascimento invalida, a data deve ser informada no formato aaaa-mm-dd.')
+        .custom(isValidDate).withMessage('Data de nascimento inválida, a data deve ser informada no formato aaaa-mm-dd.')
         .custom(validateMinAge).withMessage('Data de nascimento menor de 18 anos.')
         .custom(validateMaxAge).withMessage('Data de nascimento maior de 65 anos.'),
     check('phone').optional()
@@ -38,7 +38,7 @@ router.post('/final', [
         .custom(validateCPF).withMessage('CPF inválido.'),
     check('birthdate')
         .not().isEmpty().withMessage('Data de nascimento é obrigatória.')
-        .custom(isValidDate).withMessage('Data de nascimento invalida, a data deve ser informada no formato aaaa-mm-dd.')
+        .custom(isValidDate).withMessage('Data de nascimento inválida, a data deve ser informada no formato aaaa-mm-dd.')
         .custom(validateMinAge).withMessage('Data de nascimento menor de 18 anos.')
         .custom(validateMaxAge).withMessage('Data de nascimento maior de 65 anos.'),
     check('phone')

@@ -85,6 +85,7 @@ Esse endpoint recebe a solicitação completa, ou seja com todos os campos. A AP
 
 ```javascript
 {
+  "token": "5d55d8a56dfb792854f7d681",
   "product" : 1,
   "name" : "Leonardo",
   "email" : "leonardo@hotmail.com",
