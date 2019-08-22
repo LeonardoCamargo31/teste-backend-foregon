@@ -9,7 +9,7 @@ const init = () => {
     const express = require('express')
     const router = express.Router()
     
-    router.use('/register',authRoute)
+    router.use('/',authRoute)
     router.use(authMiddleware)
     router.use('/', solicitationRoute)
 

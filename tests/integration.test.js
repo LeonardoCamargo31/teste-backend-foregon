@@ -41,7 +41,7 @@ describe('Testando RestAPI', () => {
                 .expect(200)
                 .end((err, res) => {
                     expect(res.body.success).be.true
-                    expect(res.body.token).be.string
+                    expect(res.body.title).to.equal('Usuário criado com sucesso.')
                     done()
                 })
         })
@@ -60,13 +60,54 @@ describe('Testando RestAPI', () => {
 
     })
 
+    describe('Testes em /authenticate', () => {
+
+        it('Deve autenticar usuario', done => {
+            request(app)
+                .post('/authenticate')
+                .send({ email: 'leonardo@gmail.com', password: '123' })
+                .expect(200)
+                .end((err, res) => {
+                    expect(res.body.success).be.true
+                    expect(res.body.token).be.string
+                    expect(res.body.title).to.equal('Usuário autenticado com sucesso.')
+                    done()
+                })
+        })
+
+
+        it('Não deve autenticar usuario, usuario não encontrado', done => {
+            request(app)
+                .post('/authenticate')
+                .send({ email: 'leonardo1@gmail.com', password: '123' })
+                .expect(200)
+                .end((err, res) => {
+                    expect(res.body.success).be.false
+                    expect(res.body.title).to.equal('Usuário não encontrado.')
+                    done()
+                })
+        })
+
+        it('Não deve autenticar usuario, senha invalida', done => {
+            request(app)
+                .post('/authenticate')
+                .send({ email: 'leonardo@gmail.com', password: '1234' })
+                .expect(200)
+                .end((err, res) => {
+                    expect(res.body.success).be.false
+                    expect(res.body.title).to.equal('Senha inválida.')
+                    done()
+                })
+        })
+    })
+
 
     describe('Testes em /partial', () => {
 
         before('get token', (done) => {
             request(app)
-                .post('/register')
-                .send({ name: 'Teste api', email: 'teste@gmail.com', password: '123' })
+                .post('/authenticate')
+                .send({ email: 'leonardo@gmail.com', password: '123' })
                 .expect(200)
                 .end((err, res) => {
                     jwt = res.body.token

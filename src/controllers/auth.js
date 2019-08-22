@@ -23,15 +23,12 @@ const register = async (req, res) => {
                 const user = await User.create({ name, email, password })//await espera finalizar isso para continuar o fluxo
                 user.password = undefined//assim não exibe a senha
 
-                const token= generateToken({ id: user._id })
-
                 return res.status(201).json({
                     success: true,
                     title: 'Usuário criado com sucesso.',
-                    token:token,
                     status: 201
                 })
-            }else{
+            } else {
                 return res.status(400).json({
                     success: false,
                     title: 'Esse usuário já está existe.',
@@ -57,6 +54,50 @@ const register = async (req, res) => {
     }
 }
 
+
+const authenticate = async (req, res) => {
+    const errors = validationResult(req);
+    if (errors.isEmpty()) {
+        const { email, password } = req.body
+        //buscar usuario pelo email, se já existir
+        const user = await User.findOne({ email }).select('+password')//.select('+password') assim tb seleciono o meu passowrd que tinhamos definido de não vir
+        if (!user) {
+            return res.status(400).json({
+                success: false,
+                title: 'Usuário não encontrado.',
+                status: 400
+            })
+        }
+
+        //comparando as senhas, para isso uso o bcrypt, criptografando a senha informada
+        //await pois é uma função assincrona
+        if (!await bcrypt.compare(password, user.password)) {
+            return res.status(400).json({
+                success: false,
+                title: 'Senha inválida.',
+                status: 400
+            })
+        }
+        user.password = undefined//assim não exibe a senha
+        //cada vez gera um token diferente, pois se baseia no timestamp
+        return res.status(200).json({
+            success: true,
+            title: 'Usuário autenticado com sucesso.',
+            token: generateToken({ id: user.id }),
+            status: 200
+        })
+    } else {
+        //erro na validação dos dados
+        return res.status(400).json({
+            success: false,
+            title: 'Erro na validação de um ou mais campos.',
+            status: 400,
+            errors: extractErrors(errors.array())
+        });
+    }
+}
+
 module.exports = {
-    register
+    register,
+    authenticate
 }

@@ -1,6 +1,7 @@
 # Teste backend Foregon
 
-Alguma introdução sobre o projeto
+API para solicitação de cartões de crédito. Existe dois endpoints para a solicitação de cartão, em /partial pode-se enviar a socicitação parcialmente, ou seja, primeiro o nome, depois e-mail, e assim por diante. Quando o usuário terminar de preencher toda a proposta e aceitar os termos, envia os dados para o endpoint /final.
+
 
 ## Instalação e execução do projeto
 
@@ -27,21 +28,22 @@ A API retorna os seguintes códigos de status:
 | Códigos | Descrição |
 | :--- | :--- |
 | 200 | `OK` |
-| 201 | `SOLICITAÇÃO CRIADA` |
+| 201 | `CRIADO` |
 | 400 | `REQUISIÇÃO ERRADA` |
+| 401 | `NÃO AUTORIZADO` |
 | 500 | `ERRO INTERNO` |
 
-## Autenticação
+## Registro
 
-Para realizar requisições na API é necessário ter o token de acesso. Para obter o token é necessário se registrar na API, basta realizar um `POST` em /register como no exemplo abaixo:
+Para realizar requisições na API é necessário ter autorização. Para isso é necessário se registrar na API, basta realizar um `POST` em /register.
 
 + `POST` - Request
 
 ```javascript
 {
-  "name" : "Leonardo",
-  "email" : "leonardo@hotmail.com",
-  "senha" : "123456"
+  "name" : "admin",
+  "email" : "admin@admin.com",
+  "senha" : "123"
 }
 ```
 
@@ -53,6 +55,30 @@ Para realizar requisições na API é necessário ter o token de acesso. Para ob
   "title": "Usuário criado com sucesso.",
   "token": "seu_token_aqui",
   "status": 201
+}
+```
+
+## Autenticação
+
+Para realizar requisições na API é necessário ter o token de acesso. Para obter o token é necessário se autenticar na API, basta realizar um `POST` em /authenticate.
+
++ `POST` - Request
+
+```javascript
+{
+  "email" : "admin@admin.com",
+  "senha" : "123"
+}
+```
+
++ Response
+
+```javascript
+{
+  "success": true,
+  "title": "Usuário autenticado com sucesso.",
+  "token": "seu_token_aqui",
+  "status": 200
 }
 ```
 
